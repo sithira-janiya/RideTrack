@@ -20,7 +20,7 @@ The whole system is one process interacting with five external entities.
 
 ![DFD Level 1](diagrams/dfd-level1.png)
 
-Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (ten pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
+Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (eleven pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
 
 ### Processes
 
@@ -120,6 +120,7 @@ Editable source: page 3 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 3 of
 | Passenger | 3.3 | Payment details |
 | 3.3 ⇄ Payment Gateway | | Payment request / payment confirmation |
 | 3.3 | D5 | Payment record |
+| D5 | 3.3 | Pending payment record |
 | 3.3 | 3.4 | Payment result |
 | 3.4 ⇄ D4 | | Activate ticket + QR code / ticket record |
 | 3.4 | Passenger | QR ticket |
@@ -133,6 +134,8 @@ Editable source: page 3 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 3 of
 Everything entering or leaving process 3.0 in Level 1 appears in Level 2: the passenger's request and payment details, the QR ticket and trip history returned to them, the payment gateway exchange, reads from D2 and D4, and writes to D4 and D5. Level 2 adds only internal flows between 3.1–3.5, plus the fare quote shown to the passenger before they confirm.
 
 > Level 1 was updated to include two reads by process 3.0 that Level 2 needs: `D2 → 3.0` (fare & stop data) and `D4 → 3.0` (ticket history).
+
+Sub-process 3.3 Process Payment is expanded further in the [Level 3 diagram](#level-3--sub-process-33-process-payment-ticket-purchase) below. That diagram also needs 3.3 to read the pending payment from D5, so the Level 2 diagram shows a `D5 → 3.3` flow.
 
 ## Level 2 — Process 4.0 Validate Ticket & Count Riders
 
@@ -391,7 +394,7 @@ Ticket scanning is the first step of validation, so it is drawn as a **Level 3**
 
 ![DFD Level 3: Scan Ticket](diagrams/dfd-level3-scan-ticket.png)
 
-Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf) (page order: Level 0, Level 1, Purchase Ticket, Validate Ticket, Scan Ticket, Authority Reports, Alerts, User Accounts, Route Search, Vehicle Location)
+Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf) (page order: Level 0, Level 1, Purchase Ticket, Validate Ticket, Scan Ticket, Authority Reports, Alerts, User Accounts, Route Search, Vehicle Location, Process Payment)
 
 ### Sub-processes
 
@@ -420,6 +423,46 @@ Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of
 ### Balancing with Level 2
 
 The only flows crossing the boundary of 4.1 match Level 2: the staff scan or manual ID comes in, and "ticket ref / invalid token" goes out to 4.2. There are no data stores at this level, because verification uses only the scanned data and the signing key. Failed scans are not dropped: they travel on to 4.2 as an invalid token, and are logged to D6 and reported back to staff by 4.3 and 4.4.
+
+## Level 3 — Sub-process 3.3 Process Payment (ticket purchase)
+
+Payment is the step of ticket purchase with the most internal logic: a round trip with an external gateway, verification of its response, and success and failure paths. It is drawn as a **Level 3** diagram that expands sub-process 3.3 of the [Level 2 purchase diagram](#level-2--process-30-purchase-ticket).
+
+![DFD Level 3: Process Payment](diagrams/dfd-level3-process-payment.png)
+
+Editable source: page 11 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 11 of [`dfd.pdf`](diagrams/dfd.pdf)
+
+### Sub-processes
+
+| ID | Sub-process | Description |
+|---|---|---|
+| 3.3.1 | Create Payment Session | Takes the ticket reference and amount from 3.2, creates a payment session and stores a `PENDING` payment in D5 |
+| 3.3.2 | Send Payment Request | Sends the payment request to the Payment Gateway; the passenger enters their payment method and details with the gateway |
+| 3.3.3 | Receive Payment Confirmation | Receives the gateway's signed confirmation (the gateway's callback / webhook) |
+| 3.3.4 | Verify Gateway Response | Checks the signature, then matches the response to the pending payment in D5 (reference and amount), so forged or mismatched confirmations are rejected |
+| 3.3.5 | Record Payment Result | Updates D5 to `PAID` or `FAILED` and passes the result to 3.4, which issues the QR ticket only if the payment succeeded |
+
+### Data flows
+
+| From | To | Data |
+|---|---|---|
+| 3.2 | 3.3.1 | Ticket reference & amount |
+| 3.3.1 | D5 | Pending payment record |
+| 3.3.1 | 3.3.2 | Payment session (amount, reference) |
+| Passenger | 3.3.2 | Payment method & details |
+| 3.3.2 | Payment Gateway | Payment request |
+| Payment Gateway | 3.3.3 | Payment confirmation (signed) |
+| 3.3.3 | 3.3.4 | Gateway response |
+| D5 | 3.3.4 | Pending payment record |
+| 3.3.4 | 3.3.5 | Verified result (paid / failed) |
+| 3.3.5 | D5 | Payment record (PAID / FAILED) |
+| 3.3.5 | 3.4 | Payment result |
+
+### Balancing with Level 2
+
+The flows crossing the boundary of 3.3 match Level 2: the ticket reference and amount from 3.2, the passenger's payment details, the request to and confirmation from the gateway, reads and writes of D5, and the payment result to 3.4. The remaining flows are internal to 3.3.
+
+Payment card details are entered with the gateway and are never stored in D5, which keeps only the gateway reference, amount, method and status (see the [database design](06-database-mysql.md)).
 
 ## Consistency with other diagrams
 
