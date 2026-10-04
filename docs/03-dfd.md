@@ -20,7 +20,7 @@ The whole system is one process interacting with five external entities.
 
 ![DFD Level 1](diagrams/dfd-level1.png)
 
-Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (nine pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
+Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (ten pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
 
 ### Processes
 
@@ -66,6 +66,7 @@ Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (nine pages)
 | 3.0 | D4 | New ticket |
 | 3.0 | D5 | Payment record |
 | GPS Vehicle Tracker | 5.0 | GPS location data |
+| D2 | 5.0 | Schedule data |
 | 5.0 | D3 | Location & ETA |
 | 5.0 | 6.0 | Delay detected |
 | D1 | 6.0 | Alert recipients |
@@ -174,6 +175,45 @@ Everything entering or leaving process 4.0 in Level 1 appears in Level 2: the st
 > Level 1 was updated for this: the staff input is now labelled "QR scan / manual ID, passenger count" (matching Level 0), and a `4.0 → D4` flow, "Mark ticket used", was added.
 
 An unreadable QR or unknown ticket ID is treated as an `INVALID` outcome at 4.2, so it is still logged to D6 (`ticket_id` is nullable in the [database](06-database-mysql.md) for this reason).
+
+## Level 2 — Process 5.0 Update Vehicle Location
+
+Process 5.0 is expanded into five sub-processes. This covers the live tracking pipeline behind FR4 (live location and ETA), and the automatic delay detection behind FR8, within the 5-second update target of NFR2.
+
+![DFD Level 2: Vehicle Location](diagrams/dfd-level2-vehicle-location.png)
+
+Editable source: page 10 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 10 of [`dfd.pdf`](diagrams/dfd.pdf)
+
+### Sub-processes
+
+| ID | Sub-process | Description |
+|---|---|---|
+| 5.1 | Receive GPS Data | Accepts position readings from the vehicle's GPS tracker |
+| 5.2 | Validate & Match to Trip | Checks the reading (known vehicle, plausible coordinates, recent timestamp) and matches it to the vehicle's current trip |
+| 5.3 | Calculate ETA | Uses the validated position with the route's stops and schedule (D2) to estimate arrival times |
+| 5.4 | Store Location & ETA | Saves the position and ETA to D3; the backend also pushes it to passengers watching that route over WebSocket |
+| 5.5 | Detect Delay | Compares the ETA with the schedule; when a trip is late beyond a threshold, signals process 6.0 |
+
+### Data flows
+
+| From | To | Data |
+|---|---|---|
+| GPS Vehicle Tracker | 5.1 | GPS location data |
+| 5.1 | 5.2 | Raw GPS reading |
+| 5.2 | 5.3 | Validated position (vehicle, trip) |
+| D2 | 5.3 | Route stops & schedule data |
+| 5.3 | 5.4 | Position & ETA |
+| 5.4 | D3 | Location & ETA |
+| 5.3 | 5.5 | ETA vs schedule |
+| 5.5 | 6.0 Manage Delays & Alerts | Delay detected |
+
+### Balancing with Level 1
+
+Everything entering or leaving process 5.0 in Level 1 appears in Level 2: the GPS data in, the write to D3, and the "delay detected" signal to 6.0. Process 6.0 is drawn at the edge of the diagram because it is the neighbouring process that receives that signal; its internals are in the [Level 2 for alerts](#level-2--process-60-manage-delays--alerts).
+
+> Level 1 was updated for this: a `D2 → 5.0` flow, "Schedule data", was added, since ETA and delay calculations need the route schedule.
+
+Readings that fail validation at 5.2 are dropped and do not reach D3.
 
 ## Level 2 — Process 2.0 Search Routes & Track Vehicles (route search)
 
@@ -351,7 +391,7 @@ Ticket scanning is the first step of validation, so it is drawn as a **Level 3**
 
 ![DFD Level 3: Scan Ticket](diagrams/dfd-level3-scan-ticket.png)
 
-Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf) (page order: Level 0, Level 1, Purchase Ticket, Validate Ticket, Scan Ticket, Authority Reports, Alerts, User Accounts, Route Search)
+Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf) (page order: Level 0, Level 1, Purchase Ticket, Validate Ticket, Scan Ticket, Authority Reports, Alerts, User Accounts, Route Search, Vehicle Location)
 
 ### Sub-processes
 
