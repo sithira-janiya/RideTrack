@@ -30,6 +30,18 @@ Public transport is the main way many people in Sri Lanka travel, yet:
 | [ER diagram](docs/02-er-diagram.md) | Entity-relationship model, relationships, data dictionary |
 | [Data flow diagrams](docs/03-dfd.md) | Level 0 context diagram, Level 1 diagram, process / data store / flow tables |
 | [Traceability](docs/04-traceability.md) | Which process and entities satisfy each requirement |
+| [Architecture & tech stack](docs/05-architecture.md) | React Native + Node.js + MySQL architecture, backend structure, key flows, security |
+| [Database (MySQL)](docs/06-database-mysql.md) | ER → table mapping, indexing, sample queries; runnable script [`schema.sql`](docs/schema.sql) |
+| [Backend API](docs/07-api.md) | REST endpoints and WebSocket events |
+| [Frontend (React Native)](docs/08-frontend-react-native.md) | Libraries, project structure, screens per role, navigation |
+
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| Mobile app | React Native (Expo, TypeScript) |
+| Backend | Node.js, Express, Socket.IO |
+| Database | MySQL 8 |
 
 ### Diagrams at a glance
 
@@ -52,6 +64,11 @@ RideTrack-Docs/
     ├── 02-er-diagram.md
     ├── 03-dfd.md
     ├── 04-traceability.md
+    ├── 05-architecture.md
+    ├── 06-database-mysql.md
+    ├── 07-api.md
+    ├── 08-frontend-react-native.md
+    ├── schema.sql
     └── diagrams/
         ├── er-diagram.{png,pdf,drawio}
         ├── dfd-level0.png
@@ -61,4 +78,4 @@ RideTrack-Docs/
 
 ## Status
 
-This repository currently contains **design documentation only** (requirements, ER model and data flow diagrams). There is no source code yet. The data model and flows were derived from the project's requirements and user research, and are intended as the basis for implementation.
+This repository currently contains **design documentation only** (requirements, ER model, data flow diagrams, and the proposed React Native / Node.js / MySQL design). There is no source code yet. The data model and flows were derived from the project's requirements and user research, and are intended as the basis for implementation.
