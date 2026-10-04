@@ -34,6 +34,7 @@ Public transport is the main way many people in Sri Lanka travel, yet:
 | [Database (MySQL)](docs/06-database-mysql.md) | ER → table mapping, indexing, sample queries; runnable script [`schema.sql`](docs/schema.sql) |
 | [Backend API](docs/07-api.md) | REST endpoints and WebSocket events |
 | [Frontend (React Native)](docs/08-frontend-react-native.md) | Libraries, project structure, screens per role, navigation |
+| [Use case diagram](docs/09-use-cases.md) | Actors, use cases, include/extend relationships, use case specifications |
 
 ## Tech stack
 
@@ -47,10 +48,11 @@ Public transport is the main way many people in Sri Lanka travel, yet:
 
 | Diagram | Preview | Editable source |
 |---|---|---|
+| Use case diagram (UML) | [`use-case-diagram.png`](docs/diagrams/use-case-diagram.png) | [`use-case-diagram.drawio`](docs/diagrams/use-case-diagram.drawio) |
 | ER diagram (Chen notation) | [`er-diagram.png`](docs/diagrams/er-diagram.png) | [`er-diagram.drawio`](docs/diagrams/er-diagram.drawio) |
 | DFD Level 0, Level 1, Level 2 (Purchase Ticket, Validate Ticket, Authority Reports, Alerts, User Accounts, Route Search, Vehicle Location), Level 3 (Authenticate User, Upcoming Arrivals, Calculate ETA, Scan Ticket, Check Ticket, Process Payment, Send Notifications, Aggregate Data) | [`dfd-level0.png`](docs/diagrams/dfd-level0.png), [`dfd-level1.png`](docs/diagrams/dfd-level1.png), [`dfd-level2-purchase-ticket.png`](docs/diagrams/dfd-level2-purchase-ticket.png), [`dfd-level2-validate-ticket.png`](docs/diagrams/dfd-level2-validate-ticket.png), [`dfd-level2-authority-reports.png`](docs/diagrams/dfd-level2-authority-reports.png), [`dfd-level2-alerts.png`](docs/diagrams/dfd-level2-alerts.png), [`dfd-level2-user-accounts.png`](docs/diagrams/dfd-level2-user-accounts.png), [`dfd-level2-route-search.png`](docs/diagrams/dfd-level2-route-search.png), [`dfd-level2-vehicle-location.png`](docs/diagrams/dfd-level2-vehicle-location.png), [`dfd-level3-authenticate-user.png`](docs/diagrams/dfd-level3-authenticate-user.png), [`dfd-level3-upcoming-arrivals.png`](docs/diagrams/dfd-level3-upcoming-arrivals.png), [`dfd-level3-calculate-eta.png`](docs/diagrams/dfd-level3-calculate-eta.png), [`dfd-level3-scan-ticket.png`](docs/diagrams/dfd-level3-scan-ticket.png), [`dfd-level3-check-ticket.png`](docs/diagrams/dfd-level3-check-ticket.png), [`dfd-level3-process-payment.png`](docs/diagrams/dfd-level3-process-payment.png), [`dfd-level3-send-notifications.png`](docs/diagrams/dfd-level3-send-notifications.png), [`dfd-level3-aggregate-data.png`](docs/diagrams/dfd-level3-aggregate-data.png) | [`dfd.drawio`](docs/diagrams/dfd.drawio) |
 
-PDF versions: [`er-diagram.pdf`](docs/diagrams/er-diagram.pdf), [`dfd.pdf`](docs/diagrams/dfd.pdf).
+PDF versions: [`use-case-diagram.pdf`](docs/diagrams/use-case-diagram.pdf), [`er-diagram.pdf`](docs/diagrams/er-diagram.pdf), [`dfd.pdf`](docs/diagrams/dfd.pdf).
 
 The `.drawio` files open in [diagrams.net](https://app.diagrams.net) (File → Open from → Device), the draw.io desktop app, or the VS Code *Draw.io Integration* extension.
 
@@ -68,8 +70,10 @@ RideTrack-Docs/
     ├── 06-database-mysql.md
     ├── 07-api.md
     ├── 08-frontend-react-native.md
+    ├── 09-use-cases.md
     ├── schema.sql
     └── diagrams/
+        ├── use-case-diagram.{png,pdf,drawio}
         ├── er-diagram.{png,pdf,drawio}
         ├── dfd-level0.png
         ├── dfd-level1.png
@@ -93,4 +97,4 @@ RideTrack-Docs/
 
 ## Status
 
-This repository currently contains **design documentation only** (requirements, ER model, data flow diagrams, and the proposed React Native / Node.js / MySQL design). There is no source code yet. The data model and flows were derived from the project's requirements and user research, and are intended as the basis for implementation.
+This repository currently contains **design documentation only** (requirements, use case diagram, ER model, data flow diagrams, and the proposed React Native / Node.js / MySQL design). There is no source code yet. The data model and flows were derived from the project's requirements and user research, and are intended as the basis for implementation.
