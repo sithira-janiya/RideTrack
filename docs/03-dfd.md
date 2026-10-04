@@ -20,7 +20,7 @@ The whole system is one process interacting with five external entities.
 
 ![DFD Level 1](diagrams/dfd-level1.png)
 
-Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (four pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
+Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (five pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
 
 ### Processes
 
@@ -170,6 +170,42 @@ Everything entering or leaving process 4.0 in Level 1 appears in Level 2: the st
 > Level 1 was updated for this: the staff input is now labelled "QR scan / manual ID, passenger count" (matching Level 0), and a `4.0 → D4` flow, "Mark ticket used", was added.
 
 An unreadable QR or unknown ticket ID is treated as an `INVALID` outcome at 4.2, so it is still logged to D6 (`ticket_id` is nullable in the [database](06-database-mysql.md) for this reason).
+
+## Level 3 — Sub-process 4.1 Decode & Verify QR / Ticket ID (ticket scanning)
+
+Ticket scanning is the first step of validation, so it is drawn as a **Level 3** diagram that expands sub-process 4.1 of the [Level 2 validation diagram](#level-2--process-40-validate-ticket--count-riders).
+
+![DFD Level 3: Scan Ticket](diagrams/dfd-level3-scan-ticket.png)
+
+Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf)
+
+### Sub-processes
+
+| ID | Sub-process | Description |
+|---|---|---|
+| 4.1.1 | Read QR Code | Captures the QR from the staff device's camera; an unreadable scan is flagged |
+| 4.1.2 | Decode QR Payload | Extracts the token (ticket ID, trip, signature) from the raw payload; a malformed payload is flagged |
+| 4.1.3 | Verify Signature & Format | Checks the token's signature and format, so forged or altered QR codes are rejected (this can run on the staff device without a network, supporting NFR10) |
+| 4.1.4 | Accept Manual Ticket ID | Fallback when a QR will not scan: takes a typed ticket ID and checks its format |
+| 4.1.5 | Prepare Ticket Reference | Combines the outcome of whichever path was used into a ticket reference, or an invalid-token marker, for process 4.2 |
+
+### Data flows
+
+| From | To | Data |
+|---|---|---|
+| Conductor / Inspector | 4.1.1 | QR scan (camera image) |
+| Conductor / Inspector | 4.1.4 | Manual ticket ID |
+| 4.1.1 | 4.1.2 | Raw QR payload |
+| 4.1.1 | 4.1.5 | Unreadable scan |
+| 4.1.2 | 4.1.3 | Token (ticket ID, trip, signature) |
+| 4.1.2 | 4.1.5 | Malformed payload |
+| 4.1.3 | 4.1.5 | Verified ticket reference / bad signature |
+| 4.1.4 | 4.1.5 | Ticket ID / bad format |
+| 4.1.5 | 4.2 | Ticket reference / invalid token |
+
+### Balancing with Level 2
+
+The only flows crossing the boundary of 4.1 match Level 2: the staff scan or manual ID comes in, and "ticket ref / invalid token" goes out to 4.2. There are no data stores at this level, because verification uses only the scanned data and the signing key. Failed scans are not dropped: they travel on to 4.2 as an invalid token, and are logged to D6 and reported back to staff by 4.3 and 4.4.
 
 ## Consistency with other diagrams
 
