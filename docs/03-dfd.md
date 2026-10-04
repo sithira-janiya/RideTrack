@@ -20,7 +20,7 @@ The whole system is one process interacting with five external entities.
 
 ![DFD Level 1](diagrams/dfd-level1.png)
 
-Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (seven pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
+Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (eight pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
 
 ### Processes
 
@@ -51,7 +51,7 @@ Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (seven pages
 
 | From | To | Data |
 |---|---|---|
-| Passenger | 1.0 | Registration / login details |
+| Passenger | 1.0 | Registration / login / profile updates |
 | 1.0 | Passenger | Authentication result, profile |
 | 1.0 ⇄ D1 | | Save user / user record |
 | Passenger | 2.0 | Route search |
@@ -175,6 +175,50 @@ Everything entering or leaving process 4.0 in Level 1 appears in Level 2: the st
 
 An unreadable QR or unknown ticket ID is treated as an `INVALID` outcome at 4.2, so it is still logged to D6 (`ticket_id` is nullable in the [database](06-database-mysql.md) for this reason).
 
+## Level 2 — Process 1.0 Manage Accounts (user accounts)
+
+Process 1.0 is expanded into four sub-processes. This covers FR1 (register), FR2 (secure login) and FR12 (update profile and preferences).
+
+![DFD Level 2: User Accounts](diagrams/dfd-level2-user-accounts.png)
+
+Editable source: page 8 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 8 of [`dfd.pdf`](diagrams/dfd.pdf)
+
+The same flows apply to conductors, inspectors and authority officers, who also log in and manage a profile through this process; the diagram shows the passenger as the typical user.
+
+### Sub-processes
+
+| ID | Sub-process | Description |
+|---|---|---|
+| 1.1 | Register Account | Takes registration details (email or phone, name, password), checks the user does not already exist in D1, stores the new user with a hashed password, and returns the result |
+| 1.2 | Authenticate User | Checks login credentials against the user record in D1 and returns an access and refresh token |
+| 1.3 | View Profile | Returns the user's profile and preferences on request |
+| 1.4 | Update Profile & Preferences | Applies changes to name, language, notification settings and device push token, and saves them to D1 |
+
+### Data flows
+
+| From | To | Data |
+|---|---|---|
+| Passenger | 1.1 | Registration details (email / phone, name, password) |
+| 1.1 | Passenger | Registration result |
+| D1 | 1.1 | Existing user check |
+| 1.1 | D1 | New user (hashed password) |
+| Passenger | 1.2 | Login credentials |
+| 1.2 | Passenger | Auth result (access & refresh token) |
+| D1 | 1.2 | User record |
+| Passenger | 1.3 | Profile request |
+| 1.3 | Passenger | Profile |
+| D1 | 1.3 | User record |
+| Passenger | 1.4 | Profile / preference updates |
+| 1.4 | Passenger | Updated profile |
+| D1 | 1.4 | User record |
+| 1.4 | D1 | Updated profile |
+
+### Balancing with Level 1
+
+Everything entering or leaving process 1.0 in Level 1 appears in Level 2: registration, login and profile updates from the passenger, the authentication result and profile returned to them, and the reads from and writes to D1.
+
+> Level 1 was updated for this: the passenger's input to 1.0 is now labelled "Registration / login / profile updates", so profile changes (FR12) are visible there.
+
 ## Level 2 — Process 6.0 Manage Delays & Alerts
 
 Process 6.0 is expanded into five sub-processes. This covers FR8 (notify passengers of delays, cancellations and route changes).
@@ -266,7 +310,7 @@ Ticket scanning is the first step of validation, so it is drawn as a **Level 3**
 
 ![DFD Level 3: Scan Ticket](diagrams/dfd-level3-scan-ticket.png)
 
-Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf) (page order: Level 0, Level 1, Purchase Ticket, Validate Ticket, Scan Ticket, Authority Reports, Alerts)
+Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf) (page order: Level 0, Level 1, Purchase Ticket, Validate Ticket, Scan Ticket, Authority Reports, Alerts, User Accounts)
 
 ### Sub-processes
 
