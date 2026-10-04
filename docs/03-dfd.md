@@ -20,7 +20,7 @@ The whole system is one process interacting with five external entities.
 
 ![DFD Level 1](diagrams/dfd-level1.png)
 
-Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (eight pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
+Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (nine pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
 
 ### Processes
 
@@ -55,9 +55,9 @@ Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (eight pages
 | 1.0 | Passenger | Authentication result, profile |
 | 1.0 ⇄ D1 | | Save user / user record |
 | Passenger | 2.0 | Route search |
-| 2.0 | Passenger | Routes, live location & ETA |
+| 2.0 | Passenger | Routes, live location, ETA & occupancy |
 | D2 | 2.0 | Route data |
-| D3 | 2.0 | Vehicle location |
+| D3 | 2.0 | Vehicle location & occupancy |
 | Passenger | 3.0 | Ticket request & payment details |
 | 3.0 | Passenger | QR ticket, trip history |
 | D2 | 3.0 | Fare & stop data |
@@ -174,6 +174,47 @@ Everything entering or leaving process 4.0 in Level 1 appears in Level 2: the st
 > Level 1 was updated for this: the staff input is now labelled "QR scan / manual ID, passenger count" (matching Level 0), and a `4.0 → D4` flow, "Mark ticket used", was added.
 
 An unreadable QR or unknown ticket ID is treated as an `INVALID` outcome at 4.2, so it is still logged to D6 (`ticket_id` is nullable in the [database](06-database-mysql.md) for this reason).
+
+## Level 2 — Process 2.0 Search Routes & Track Vehicles (route search)
+
+Process 2.0 is expanded into four sub-processes. This covers FR3 (search routes, upcoming arrivals), FR4 (live location and ETA) and FR7 (occupancy display).
+
+![DFD Level 2: Route Search](diagrams/dfd-level2-route-search.png)
+
+Editable source: page 9 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 9 of [`dfd.pdf`](diagrams/dfd.pdf)
+
+### Sub-processes
+
+| ID | Sub-process | Description |
+|---|---|---|
+| 2.1 | Search Routes | Finds routes matching a keyword, mode (bus / train) or stop, using route and stop data in D2 |
+| 2.2 | Show Route Details & Stops | Returns the selected route's ordered stops and schedule from D2 |
+| 2.3 | Calculate Upcoming Arrivals | For a chosen stop, combines schedules (D2) with current vehicle positions (D3) to give upcoming arrivals with ETA |
+| 2.4 | Track Live Vehicle | Returns the live location, ETA and occupancy of vehicles on a route from D3; in the app this is pushed continuously over WebSocket |
+
+### Data flows
+
+| From | To | Data |
+|---|---|---|
+| Passenger | 2.1 | Route search (keyword, mode, stop) |
+| 2.1 | Passenger | Matching routes |
+| D2 | 2.1 | Route & stop data |
+| Passenger | 2.2 | Route selection |
+| 2.2 | Passenger | Route details & stops |
+| D2 | 2.2 | Route, stop & schedule data |
+| Passenger | 2.3 | Stop selection |
+| 2.3 | Passenger | Upcoming arrivals (ETA) |
+| D2 | 2.3 | Schedule data |
+| D3 | 2.3 | Vehicle location |
+| Passenger | 2.4 | Track request (route / vehicle) |
+| 2.4 | Passenger | Live location, ETA & occupancy |
+| D3 | 2.4 | Vehicle location & occupancy |
+
+### Balancing with Level 1
+
+Everything entering or leaving process 2.0 in Level 1 appears in Level 2: the passenger's search, the routes and live information returned to them, and the reads from D2 and D3. Process 2.0 only reads data stores, so there are no writes.
+
+> Level 1 was updated for this: the output to the passenger now reads "Routes, live location, ETA & occupancy" and the D3 input reads "Vehicle location & occupancy", so occupancy (FR7) is visible there.
 
 ## Level 2 — Process 1.0 Manage Accounts (user accounts)
 
@@ -310,7 +351,7 @@ Ticket scanning is the first step of validation, so it is drawn as a **Level 3**
 
 ![DFD Level 3: Scan Ticket](diagrams/dfd-level3-scan-ticket.png)
 
-Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf) (page order: Level 0, Level 1, Purchase Ticket, Validate Ticket, Scan Ticket, Authority Reports, Alerts, User Accounts)
+Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf) (page order: Level 0, Level 1, Purchase Ticket, Validate Ticket, Scan Ticket, Authority Reports, Alerts, User Accounts, Route Search)
 
 ### Sub-processes
 
