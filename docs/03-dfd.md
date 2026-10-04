@@ -20,7 +20,7 @@ The whole system is one process interacting with five external entities.
 
 ![DFD Level 1](diagrams/dfd-level1.png)
 
-Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (thirteen pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
+Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (fourteen pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
 
 ### Processes
 
@@ -388,13 +388,47 @@ Everything entering or leaving process 7.0 in Level 1 appears in Level 2: the of
 
 > Level 1 was updated for this: a `D2 → 7.0` flow, "Route data", was added, since route performance reports need route information.
 
+## Level 3 — Sub-process 2.3 Calculate Upcoming Arrivals (route search)
+
+Upcoming arrivals is the route search step with the most internal logic: it combines timetables with live vehicle positions and falls back to the timetable when a vehicle has no live data. It is drawn as a **Level 3** diagram that expands sub-process 2.3 of the [Level 2 route search diagram](#level-2--process-20-search-routes--track-vehicles-route-search).
+
+![DFD Level 3: Upcoming Arrivals](diagrams/dfd-level3-upcoming-arrivals.png)
+
+Editable source: page 14 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 14 of [`dfd.pdf`](diagrams/dfd.pdf)
+
+### Sub-processes
+
+| ID | Sub-process | Description |
+|---|---|---|
+| 2.3.1 | Find Scheduled Trips | For the stop the passenger selected, reads the trips that serve it from the schedule in D2 and keeps the upcoming ones |
+| 2.3.2 | Get Live Positions | Looks up each trip's vehicle position in D3 and splits trips into those with live data and those without |
+| 2.3.3 | Estimate Live ETA | Estimates arrival time at the selected stop from the vehicle's live position |
+| 2.3.4 | Merge & Sort Arrivals | Combines live ETAs with scheduled times for trips without live data, sorts by arrival time and returns the list |
+
+### Data flows
+
+| From | To | Data |
+|---|---|---|
+| Passenger | 2.3.1 | Stop selection |
+| D2 | 2.3.1 | Schedule data (trips serving stop) |
+| 2.3.1 | 2.3.2 | Upcoming scheduled trips |
+| D3 | 2.3.2 | Vehicle location |
+| 2.3.2 | 2.3.3 | Trips with live positions |
+| 2.3.2 | 2.3.4 | Trips without live data |
+| 2.3.3 | 2.3.4 | Live ETAs |
+| 2.3.4 | Passenger | Upcoming arrivals (ETA) |
+
+### Balancing with Level 2
+
+The flows crossing the boundary of 2.3 match Level 2: the stop selection from the passenger, schedule data from D2 and vehicle location from D3 come in, and the upcoming arrivals go back to the passenger. In the app, arrivals from the timetable fallback should be marked as "scheduled" so passengers can tell them apart from live estimates.
+
 ## Level 3 — Sub-process 4.1 Decode & Verify QR / Ticket ID (ticket scanning)
 
 Ticket scanning is the first step of validation, so it is drawn as a **Level 3** diagram that expands sub-process 4.1 of the [Level 2 validation diagram](#level-2--process-40-validate-ticket--count-riders).
 
 ![DFD Level 3: Scan Ticket](diagrams/dfd-level3-scan-ticket.png)
 
-Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf) (page order: Level 0, Level 1, Purchase Ticket, Validate Ticket, Scan Ticket, Authority Reports, Alerts, User Accounts, Route Search, Vehicle Location, Process Payment, Send Notifications, Check Ticket)
+Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf) (page order: Level 0, Level 1, Purchase Ticket, Validate Ticket, Scan Ticket, Authority Reports, Alerts, User Accounts, Route Search, Vehicle Location, Process Payment, Send Notifications, Check Ticket, Upcoming Arrivals)
 
 ### Sub-processes
 
