@@ -20,7 +20,7 @@ The whole system is one process interacting with five external entities.
 
 ![DFD Level 1](diagrams/dfd-level1.png)
 
-Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (twelve pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
+Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (thirteen pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
 
 ### Processes
 
@@ -394,7 +394,7 @@ Ticket scanning is the first step of validation, so it is drawn as a **Level 3**
 
 ![DFD Level 3: Scan Ticket](diagrams/dfd-level3-scan-ticket.png)
 
-Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf) (page order: Level 0, Level 1, Purchase Ticket, Validate Ticket, Scan Ticket, Authority Reports, Alerts, User Accounts, Route Search, Vehicle Location, Process Payment, Send Notifications)
+Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf) (page order: Level 0, Level 1, Purchase Ticket, Validate Ticket, Scan Ticket, Authority Reports, Alerts, User Accounts, Route Search, Vehicle Location, Process Payment, Send Notifications, Check Ticket)
 
 ### Sub-processes
 
@@ -423,6 +423,42 @@ Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of
 ### Balancing with Level 2
 
 The only flows crossing the boundary of 4.1 match Level 2: the staff scan or manual ID comes in, and "ticket ref / invalid token" goes out to 4.2. There are no data stores at this level, because verification uses only the scanned data and the signing key. Failed scans are not dropped: they travel on to 4.2 as an invalid token, and are logged to D6 and reported back to staff by 4.3 and 4.4.
+
+## Level 3 — Sub-process 4.2 Check Ticket Status & Trip (ticket validation)
+
+This is where a scanned ticket is judged valid or invalid. It is drawn as a **Level 3** diagram that expands sub-process 4.2 of the [Level 2 validation diagram](#level-2--process-40-validate-ticket--count-riders).
+
+![DFD Level 3: Check Ticket](diagrams/dfd-level3-check-ticket.png)
+
+Editable source: page 13 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 13 of [`dfd.pdf`](diagrams/dfd.pdf)
+
+### Sub-processes
+
+| ID | Sub-process | Description |
+|---|---|---|
+| 4.2.1 | Look Up Ticket | Finds the ticket in D4 using the reference from 4.1; an unknown ticket or an invalid token goes straight to 4.2.4 |
+| 4.2.2 | Check Ticket Status | Accepts only `ACTIVE` tickets; `USED`, `EXPIRED` or `CANCELLED` tickets fail with that reason |
+| 4.2.3 | Check Trip & Time Window | Checks that the trip in the QR token matches the ticket's trip and that the scan falls within that trip's time window |
+| 4.2.4 | Build Check Outcome | Combines the result of whichever check finished last into one outcome — valid, or invalid with a reason — for 4.3 |
+
+### Data flows
+
+| From | To | Data |
+|---|---|---|
+| 4.1 | 4.2.1 | Ticket reference / invalid token |
+| D4 | 4.2.1 | Ticket record (with trip details) |
+| 4.2.1 | 4.2.2 | Ticket record |
+| 4.2.1 | 4.2.4 | Not found / invalid token |
+| 4.2.2 | 4.2.3 | Active ticket |
+| 4.2.2 | 4.2.4 | Status failure (used / expired / cancelled) |
+| 4.2.3 | 4.2.4 | Trip & time check result |
+| 4.2.4 | 4.3 | Check outcome (valid / invalid + reason) |
+
+### Balancing with Level 2
+
+The flows crossing the boundary of 4.2 match Level 2: the ticket reference or invalid token from 4.1 and the ticket record from D4 come in, and the check outcome goes out to 4.3. Each failure path stops further checks and goes directly to 4.2.4, so the reason reported to staff is the first check that failed.
+
+The trip check compares the trip in the scanned token with the ticket's own trip and time. Checking that the ticket is for the specific vehicle the staff member is on would need the staff assignment and trip data (D1 and D2), which the current Level 1 and Level 2 diagrams do not route to process 4.0; it can be added later if required.
 
 ## Level 3 — Sub-process 3.3 Process Payment (ticket purchase)
 
