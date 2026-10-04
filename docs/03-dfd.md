@@ -20,7 +20,7 @@ The whole system is one process interacting with five external entities.
 
 ![DFD Level 1](diagrams/dfd-level1.png)
 
-Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (fifteen pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
+Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (sixteen pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
 
 ### Processes
 
@@ -388,6 +388,42 @@ Everything entering or leaving process 7.0 in Level 1 appears in Level 2: the of
 
 > Level 1 was updated for this: a `D2 → 7.0` flow, "Route data", was added, since route performance reports need route information.
 
+## Level 3 — Sub-process 1.2 Authenticate User (user accounts)
+
+Login is the security-sensitive step of account management (FR2, NFR3). It is drawn as a **Level 3** diagram that expands sub-process 1.2 of the [Level 2 user accounts diagram](#level-2--process-10-manage-accounts-user-accounts).
+
+![DFD Level 3: Authenticate User](diagrams/dfd-level3-authenticate-user.png)
+
+Editable source: page 16 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 16 of [`dfd.pdf`](diagrams/dfd.pdf)
+
+### Sub-processes
+
+| ID | Sub-process | Description |
+|---|---|---|
+| 1.2.1 | Look Up Account | Finds the user in D1 by email or phone; an unknown account goes straight to 1.2.4 |
+| 1.2.2 | Verify Password | Compares the entered password with the stored bcrypt hash; a mismatch goes to 1.2.4 |
+| 1.2.3 | Check Status & Issue Tokens | Rejects disabled accounts (`is_active = false`); otherwise issues a short-lived access token and a refresh token carrying the user's role |
+| 1.2.4 | Build Auth Result | Returns the tokens on success, or an error on failure |
+
+### Data flows
+
+| From | To | Data |
+|---|---|---|
+| Passenger | 1.2.1 | Login credentials (email / phone, password) |
+| D1 | 1.2.1 | User record |
+| 1.2.1 | 1.2.2 | User record & entered password |
+| 1.2.1 | 1.2.4 | Unknown account |
+| 1.2.2 | 1.2.3 | Verified user |
+| 1.2.2 | 1.2.4 | Wrong password |
+| 1.2.3 | 1.2.4 | Tokens & role / account disabled |
+| 1.2.4 | Passenger | Auth result (tokens or error) |
+
+### Balancing with Level 2
+
+The flows crossing the boundary of 1.2 match Level 2: login credentials from the passenger and the user record from D1 come in, and the auth result goes back to the passenger.
+
+**Security note:** 1.2.4 should return the same generic "invalid email/phone or password" message for both an unknown account and a wrong password, so the login screen cannot be used to discover which accounts exist. The login endpoint should also be rate limited (see [architecture](05-architecture.md#security)).
+
 ## Level 3 — Sub-process 2.3 Calculate Upcoming Arrivals (route search)
 
 Upcoming arrivals is the route search step with the most internal logic: it combines timetables with live vehicle positions and falls back to the timetable when a vehicle has no live data. It is drawn as a **Level 3** diagram that expands sub-process 2.3 of the [Level 2 route search diagram](#level-2--process-20-search-routes--track-vehicles-route-search).
@@ -465,7 +501,7 @@ Ticket scanning is the first step of validation, so it is drawn as a **Level 3**
 
 ![DFD Level 3: Scan Ticket](diagrams/dfd-level3-scan-ticket.png)
 
-Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf) (page order: Level 0, Level 1, Purchase Ticket, Validate Ticket, Scan Ticket, Authority Reports, Alerts, User Accounts, Route Search, Vehicle Location, Process Payment, Send Notifications, Check Ticket, Upcoming Arrivals, Calculate ETA)
+Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf) (page order: Level 0, Level 1, Purchase Ticket, Validate Ticket, Scan Ticket, Authority Reports, Alerts, User Accounts, Route Search, Vehicle Location, Process Payment, Send Notifications, Check Ticket, Upcoming Arrivals, Calculate ETA, Authenticate User)
 
 ### Sub-processes
 
