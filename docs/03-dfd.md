@@ -20,7 +20,7 @@ The whole system is one process interacting with five external entities.
 
 ![DFD Level 1](diagrams/dfd-level1.png)
 
-Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (fourteen pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
+Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (fifteen pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
 
 ### Processes
 
@@ -422,13 +422,50 @@ Editable source: page 14 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 14 
 
 The flows crossing the boundary of 2.3 match Level 2: the stop selection from the passenger, schedule data from D2 and vehicle location from D3 come in, and the upcoming arrivals go back to the passenger. In the app, arrivals from the timetable fallback should be marked as "scheduled" so passengers can tell them apart from live estimates.
 
+## Level 3 — Sub-process 5.3 Calculate ETA (vehicle location)
+
+ETA calculation is the vehicle location step with the most internal logic: it places a raw GPS position on the route and turns it into arrival estimates for the stops ahead. It is drawn as a **Level 3** diagram that expands sub-process 5.3 of the [Level 2 vehicle location diagram](#level-2--process-50-update-vehicle-location).
+
+![DFD Level 3: Calculate ETA](diagrams/dfd-level3-calculate-eta.png)
+
+Editable source: page 15 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 15 of [`dfd.pdf`](diagrams/dfd.pdf)
+
+### Sub-processes
+
+| ID | Sub-process | Description |
+|---|---|---|
+| 5.3.1 | Snap Position to Route | Places the validated GPS position onto the route using the stop locations in D2, giving the vehicle's progress along the route and the stops still ahead |
+| 5.3.2 | Estimate Travel Times | Uses the scheduled segment times from D2 to estimate travel time from the vehicle's position to each remaining stop; passes the scheduled arrival times on for comparison |
+| 5.3.3 | Compute ETAs | Adds travel times to the current time to give an ETA for each remaining stop, and sends position and ETA to 5.4 for storage |
+| 5.3.4 | Compare with Schedule | Compares each ETA with the scheduled arrival time and passes the difference to 5.5, which decides whether the trip is delayed |
+
+### Data flows
+
+| From | To | Data |
+|---|---|---|
+| 5.2 | 5.3.1 | Validated position (vehicle, trip) |
+| D2 | 5.3.1 | Route stop locations |
+| 5.3.1 | 5.3.2 | Position on route & remaining stops |
+| D2 | 5.3.2 | Scheduled segment & arrival times |
+| 5.3.2 | 5.3.3 | Travel time to each stop |
+| 5.3.2 | 5.3.4 | Scheduled arrival times |
+| 5.3.3 | 5.4 | Position & ETA |
+| 5.3.3 | 5.3.4 | ETAs |
+| 5.3.4 | 5.5 | ETA vs schedule |
+
+### Balancing with Level 2
+
+The flows crossing the boundary of 5.3 match Level 2: the validated position from 5.2 and the route stops and schedule data from D2 come in (D2's single Level 2 flow is split here into the two parts each step uses), and position and ETA go to 5.4 while the ETA-versus-schedule comparison goes to 5.5.
+
+This design estimates travel times from the schedule. A later version could improve accuracy by also using the vehicle's recent speed from its previous positions in D3; that would add a `D3 → 5.3` read at Level 2.
+
 ## Level 3 — Sub-process 4.1 Decode & Verify QR / Ticket ID (ticket scanning)
 
 Ticket scanning is the first step of validation, so it is drawn as a **Level 3** diagram that expands sub-process 4.1 of the [Level 2 validation diagram](#level-2--process-40-validate-ticket--count-riders).
 
 ![DFD Level 3: Scan Ticket](diagrams/dfd-level3-scan-ticket.png)
 
-Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf) (page order: Level 0, Level 1, Purchase Ticket, Validate Ticket, Scan Ticket, Authority Reports, Alerts, User Accounts, Route Search, Vehicle Location, Process Payment, Send Notifications, Check Ticket, Upcoming Arrivals)
+Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf) (page order: Level 0, Level 1, Purchase Ticket, Validate Ticket, Scan Ticket, Authority Reports, Alerts, User Accounts, Route Search, Vehicle Location, Process Payment, Send Notifications, Check Ticket, Upcoming Arrivals, Calculate ETA)
 
 ### Sub-processes
 
