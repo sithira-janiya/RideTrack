@@ -20,7 +20,7 @@ The whole system is one process interacting with five external entities.
 
 ![DFD Level 1](diagrams/dfd-level1.png)
 
-Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (five pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
+Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (six pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
 
 ### Processes
 
@@ -80,6 +80,7 @@ Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (five pages)
 | Authority Officer | 7.0 | Report requests, route updates |
 | 7.0 | Authority Officer | Dashboard & reports |
 | D3, D4, D7 | 7.0 | Live data, ticket data, delay data |
+| D2 | 7.0 | Route data |
 | 7.0 | D2 | Route / schedule updates |
 | 7.0 | D8 | Generated reports |
 
@@ -171,13 +172,57 @@ Everything entering or leaving process 4.0 in Level 1 appears in Level 2: the st
 
 An unreadable QR or unknown ticket ID is treated as an `INVALID` outcome at 4.2, so it is still logged to D6 (`ticket_id` is nullable in the [database](06-database-mysql.md) for this reason).
 
+## Level 2 — Process 7.0 Monitor Network & Reports (authority reports)
+
+Process 7.0 is expanded into five sub-processes. This covers FR9 (operations dashboard), FR10 (reports and statistics) and the authority's maintenance of routes and schedules.
+
+![DFD Level 2: Authority Reports](diagrams/dfd-level2-authority-reports.png)
+
+Editable source: page 6 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 6 of [`dfd.pdf`](diagrams/dfd.pdf)
+
+### Sub-processes
+
+| ID | Sub-process | Description |
+|---|---|---|
+| 7.1 | Show Live Dashboard | Combines live vehicle positions, occupancy (D3) and active delays (D7) into the dashboard shown to the officer |
+| 7.2 | Process Report Request | Receives the report request (type, route, period) and validates the criteria |
+| 7.3 | Collect & Aggregate Data | Reads occupancy (D3), delays (D7), tickets (D4) and route data (D2) for the chosen period and computes statistics |
+| 7.4 | Generate Report | Builds the route performance, delay or occupancy report, saves it to D8 and returns it to the officer |
+| 7.5 | Manage Routes & Schedules | Applies the officer's route and schedule changes to D2 |
+
+### Data flows
+
+| From | To | Data |
+|---|---|---|
+| Transport Authority Officer | 7.1 | Dashboard request |
+| 7.1 | Transport Authority Officer | Live dashboard (vehicles, delays, occupancy) |
+| D3 | 7.1 | Live vehicle & occupancy data |
+| D7 | 7.1 | Delay data |
+| Transport Authority Officer | 7.2 | Report request (type, route, period) |
+| 7.2 | 7.3 | Validated report criteria |
+| D3 | 7.3 | Occupancy data |
+| D7 | 7.3 | Delay data |
+| D4 | 7.3 | Ticket data |
+| D2 | 7.3 | Route data |
+| 7.3 | 7.4 | Aggregated statistics |
+| 7.4 | D8 | Generated report |
+| 7.4 | Transport Authority Officer | Route performance, delay & occupancy reports |
+| Transport Authority Officer | 7.5 | Route & schedule updates |
+| 7.5 | D2 | Route / schedule updates |
+
+### Balancing with Level 1
+
+Everything entering or leaving process 7.0 in Level 1 appears in Level 2: the officer's requests and updates, the dashboard and reports returned to them, reads from D2, D3, D4 and D7, and writes to D2 and D8.
+
+> Level 1 was updated for this: a `D2 → 7.0` flow, "Route data", was added, since route performance reports need route information.
+
 ## Level 3 — Sub-process 4.1 Decode & Verify QR / Ticket ID (ticket scanning)
 
 Ticket scanning is the first step of validation, so it is drawn as a **Level 3** diagram that expands sub-process 4.1 of the [Level 2 validation diagram](#level-2--process-40-validate-ticket--count-riders).
 
 ![DFD Level 3: Scan Ticket](diagrams/dfd-level3-scan-ticket.png)
 
-Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf)
+Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf) (page order: Level 0, Level 1, Purchase Ticket, Validate Ticket, Scan Ticket, Authority Reports)
 
 ### Sub-processes
 
