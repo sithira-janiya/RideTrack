@@ -20,7 +20,7 @@ The whole system is one process interacting with five external entities.
 
 ![DFD Level 1](diagrams/dfd-level1.png)
 
-Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (eleven pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
+Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (twelve pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
 
 ### Processes
 
@@ -394,7 +394,7 @@ Ticket scanning is the first step of validation, so it is drawn as a **Level 3**
 
 ![DFD Level 3: Scan Ticket](diagrams/dfd-level3-scan-ticket.png)
 
-Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf) (page order: Level 0, Level 1, Purchase Ticket, Validate Ticket, Scan Ticket, Authority Reports, Alerts, User Accounts, Route Search, Vehicle Location, Process Payment)
+Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf) (page order: Level 0, Level 1, Purchase Ticket, Validate Ticket, Scan Ticket, Authority Reports, Alerts, User Accounts, Route Search, Vehicle Location, Process Payment, Send Notifications)
 
 ### Sub-processes
 
@@ -463,6 +463,39 @@ Editable source: page 11 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 11 
 The flows crossing the boundary of 3.3 match Level 2: the ticket reference and amount from 3.2, the passenger's payment details, the request to and confirmation from the gateway, reads and writes of D5, and the payment result to 3.4. The remaining flows are internal to 3.3.
 
 Payment card details are entered with the gateway and are never stored in D5, which keeps only the gateway reference, amount, method and status (see the [database design](06-database-mysql.md)).
+
+## Level 3 — Sub-process 6.4 Send Notifications (alerts)
+
+Sending is the alerts step with the most internal logic: personalising messages, pushing them to devices, recording delivery and retrying failures. It is drawn as a **Level 3** diagram that expands sub-process 6.4 of the [Level 2 alerts diagram](#level-2--process-60-manage-delays--alerts).
+
+![DFD Level 3: Send Notifications](diagrams/dfd-level3-send-notifications.png)
+
+Editable source: page 12 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 12 of [`dfd.pdf`](diagrams/dfd.pdf)
+
+### Sub-processes
+
+| ID | Sub-process | Description |
+|---|---|---|
+| 6.4.1 | Compose Message | Builds the alert text for each recipient in their preferred language |
+| 6.4.2 | Push to Devices | Sends the push notification to each passenger's device (via FCM in the [proposed architecture](05-architecture.md)) and reports a send status per recipient |
+| 6.4.3 | Record Delivery | Writes the delivery record for each recipient to D7 (the `alert_recipients` table) and passes failed sends on |
+| 6.4.4 | Retry Failed Sends | Queues failed sends (e.g. device offline) and returns them to 6.4.2 for another attempt |
+
+### Data flows
+
+| From | To | Data |
+|---|---|---|
+| 6.3 | 6.4.1 | Alert & recipient list |
+| 6.4.1 | 6.4.2 | Personalised messages (per language) |
+| 6.4.2 | Passenger | Delay / cancellation alerts (push) |
+| 6.4.2 | 6.4.3 | Send status per recipient |
+| 6.4.3 | D7 | Delivery record |
+| 6.4.3 | 6.4.4 | Failed sends |
+| 6.4.4 | 6.4.2 | Retry queue |
+
+### Balancing with Level 2
+
+The flows crossing the boundary of 6.4 match Level 2: the alert and recipient list from 6.3 comes in, and the alerts to the passenger and the delivery record to D7 go out. The retry loop is internal to 6.4. The push service (FCM) is treated as the delivery channel to the passenger's device rather than a separate external entity, so the Level 0 and Level 1 diagrams stay unchanged.
 
 ## Consistency with other diagrams
 
