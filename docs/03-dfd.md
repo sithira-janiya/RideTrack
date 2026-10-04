@@ -20,7 +20,7 @@ The whole system is one process interacting with five external entities.
 
 ![DFD Level 1](diagrams/dfd-level1.png)
 
-Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (sixteen pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
+Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (seventeen pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
 
 ### Processes
 
@@ -501,7 +501,7 @@ Ticket scanning is the first step of validation, so it is drawn as a **Level 3**
 
 ![DFD Level 3: Scan Ticket](diagrams/dfd-level3-scan-ticket.png)
 
-Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf) (page order: Level 0, Level 1, Purchase Ticket, Validate Ticket, Scan Ticket, Authority Reports, Alerts, User Accounts, Route Search, Vehicle Location, Process Payment, Send Notifications, Check Ticket, Upcoming Arrivals, Calculate ETA, Authenticate User)
+Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf) (page order: Level 0, Level 1, Purchase Ticket, Validate Ticket, Scan Ticket, Authority Reports, Alerts, User Accounts, Route Search, Vehicle Location, Process Payment, Send Notifications, Check Ticket, Upcoming Arrivals, Calculate ETA, Authenticate User, Aggregate Data)
 
 ### Sub-processes
 
@@ -639,6 +639,45 @@ Editable source: page 12 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 12 
 ### Balancing with Level 2
 
 The flows crossing the boundary of 6.4 match Level 2: the alert and recipient list from 6.3 comes in, and the alerts to the passenger and the delivery record to D7 go out. The retry loop is internal to 6.4. The push service (FCM) is treated as the delivery channel to the passenger's device rather than a separate external entity, so the Level 0 and Level 1 diagrams stay unchanged.
+
+## Level 3 — Sub-process 7.3 Collect & Aggregate Data (authority reports)
+
+Aggregation is the reporting step with the most internal logic: it selects the trips a report covers and computes statistics from three different data stores. It is drawn as a **Level 3** diagram that expands sub-process 7.3 of the [Level 2 authority reports diagram](#level-2--process-70-monitor-network--reports-authority-reports).
+
+![DFD Level 3: Aggregate Data](diagrams/dfd-level3-aggregate-data.png)
+
+Editable source: page 17 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 17 of [`dfd.pdf`](diagrams/dfd.pdf)
+
+### Sub-processes
+
+| ID | Sub-process | Description |
+|---|---|---|
+| 7.3.1 | Select Trips in Scope | Uses the validated criteria (report type, route, period) and route data in D2 to pick the trips the report covers |
+| 7.3.2 | Aggregate Ridership | Counts tickets and revenue for those trips from D4 |
+| 7.3.3 | Aggregate Delays | Counts delay alerts and computes average and worst delay from D7 |
+| 7.3.4 | Aggregate Occupancy | Computes average and peak passenger load against capacity from D3 |
+| 7.3.5 | Combine Statistics | Merges the three sets of statistics into one dataset for 7.4 |
+
+### Data flows
+
+| From | To | Data |
+|---|---|---|
+| 7.2 | 7.3.1 | Validated report criteria |
+| D2 | 7.3.1 | Route data |
+| 7.3.1 | 7.3.2, 7.3.3, 7.3.4 | Trips in scope |
+| D4 | 7.3.2 | Ticket data |
+| D7 | 7.3.3 | Delay data |
+| D3 | 7.3.4 | Occupancy data |
+| 7.3.2 | 7.3.5 | Ridership stats |
+| 7.3.3 | 7.3.5 | Delay stats |
+| 7.3.4 | 7.3.5 | Occupancy stats |
+| 7.3.5 | 7.4 | Aggregated statistics |
+
+### Balancing with Level 2
+
+The flows crossing the boundary of 7.3 match Level 2: the validated criteria from 7.2 and reads from D2, D3, D4 and D7 come in, and the aggregated statistics go to 7.4.
+
+Not every report needs all three aggregations: a delay report only needs 7.3.3, and an occupancy report only 7.3.4. Route performance reports use all three. The three aggregations are independent, so they can run in parallel.
 
 ## Consistency with other diagrams
 
