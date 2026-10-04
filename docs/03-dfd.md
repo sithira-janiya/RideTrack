@@ -20,7 +20,7 @@ The whole system is one process interacting with five external entities.
 
 ![DFD Level 1](diagrams/dfd-level1.png)
 
-Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (three pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
+Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (four pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
 
 ### Processes
 
@@ -71,9 +71,10 @@ Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (three pages
 | D1 | 6.0 | Alert recipients |
 | 6.0 | D7 | Alert record |
 | 6.0 | Passenger | Delay / cancellation alerts |
-| Conductor / Inspector | 4.0 | QR scan / manual ID |
+| Conductor / Inspector | 4.0 | QR scan / manual ID, passenger count |
 | 4.0 | Conductor / Inspector | Validation result |
 | D4 | 4.0 | Ticket status |
+| 4.0 | D4 | Mark ticket used |
 | 4.0 | D6 | Scan log |
 | 4.0 | D3 | Passenger count |
 | Authority Officer | 7.0 | Report requests, route updates |
@@ -127,6 +128,48 @@ Editable source: page 3 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 3 of
 Everything entering or leaving process 3.0 in Level 1 appears in Level 2: the passenger's request and payment details, the QR ticket and trip history returned to them, the payment gateway exchange, reads from D2 and D4, and writes to D4 and D5. Level 2 adds only internal flows between 3.1–3.5, plus the fare quote shown to the passenger before they confirm.
 
 > Level 1 was updated to include two reads by process 3.0 that Level 2 needs: `D2 → 3.0` (fare & stop data) and `D4 → 3.0` (ticket history).
+
+## Level 2 — Process 4.0 Validate Ticket & Count Riders
+
+Process 4.0 is expanded into five sub-processes. This covers FR6 (scan and validate QR tickets) and FR7 (passenger occupancy).
+
+![DFD Level 2: Validate Ticket](diagrams/dfd-level2-validate-ticket.png)
+
+Editable source: page 4 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 4 of [`dfd.pdf`](diagrams/dfd.pdf)
+
+### Sub-processes
+
+| ID | Sub-process | Description |
+|---|---|---|
+| 4.1 | Decode & Verify QR / Ticket ID | Reads the scanned QR (or manually entered ticket ID) and checks its signature and format |
+| 4.2 | Check Ticket Status & Trip | Looks the ticket up in D4 and checks it exists, is `ACTIVE`, not expired, and matches the vehicle's trip |
+| 4.3 | Mark Used & Log Scan | Marks a valid ticket `USED` in D4 and writes every scan (valid or invalid) to D6 |
+| 4.4 | Return Validation Result | Sends **VALID** / **INVALID** (with reason) to the conductor or inspector |
+| 4.5 | Update Passenger Count | Updates on-board count in D3 from valid boardings and any manual count entered by staff |
+
+### Data flows
+
+| From | To | Data |
+|---|---|---|
+| Conductor / Inspector | 4.1 | QR scan / manual ticket ID |
+| 4.1 | 4.2 | Ticket reference, or invalid token |
+| D4 | 4.2 | Ticket record |
+| 4.2 | 4.3 | Check outcome (valid / invalid + reason) |
+| 4.3 | D4 | Mark ticket USED (valid scans only) |
+| 4.3 | D6 | Scan log |
+| 4.3 | 4.4 | Scan outcome |
+| 4.4 | Conductor / Inspector | Validation result |
+| 4.3 | 4.5 | Boarding event (valid scans) |
+| Conductor / Inspector | 4.5 | Manual passenger count |
+| 4.5 | D3 | Passenger count |
+
+### Balancing with Level 1
+
+Everything entering or leaving process 4.0 in Level 1 appears in Level 2: the staff scan and passenger count, the validation result returned to staff, the read of D4, and the writes to D4, D6 and D3. Level 2 adds only the internal flows between 4.1–4.5.
+
+> Level 1 was updated for this: the staff input is now labelled "QR scan / manual ID, passenger count" (matching Level 0), and a `4.0 → D4` flow, "Mark ticket used", was added.
+
+An unreadable QR or unknown ticket ID is treated as an `INVALID` outcome at 4.2, so it is still logged to D6 (`ticket_id` is nullable in the [database](06-database-mysql.md) for this reason).
 
 ## Consistency with other diagrams
 

@@ -28,7 +28,7 @@ Public transport is the main way many people in Sri Lanka travel, yet:
 |---|---|
 | [Requirements](docs/01-requirements.md) | Functional (FR1–FR12) and non-functional (NFR1–NFR10) requirements, user stories |
 | [ER diagram](docs/02-er-diagram.md) | Entity-relationship model, relationships, data dictionary |
-| [Data flow diagrams](docs/03-dfd.md) | Level 0 context diagram, Level 1 diagram, Level 2 (Purchase Ticket), process / data store / flow tables |
+| [Data flow diagrams](docs/03-dfd.md) | Level 0 context diagram, Level 1 diagram, Level 2 (Purchase Ticket, Validate Ticket), process / data store / flow tables |
 | [Traceability](docs/04-traceability.md) | Which process and entities satisfy each requirement |
 | [Architecture & tech stack](docs/05-architecture.md) | React Native + Node.js + MySQL architecture, backend structure, key flows, security |
 | [Database (MySQL)](docs/06-database-mysql.md) | ER → table mapping, indexing, sample queries; runnable script [`schema.sql`](docs/schema.sql) |
@@ -48,7 +48,7 @@ Public transport is the main way many people in Sri Lanka travel, yet:
 | Diagram | Preview | Editable source |
 |---|---|---|
 | ER diagram (Chen notation) | [`er-diagram.png`](docs/diagrams/er-diagram.png) | [`er-diagram.drawio`](docs/diagrams/er-diagram.drawio) |
-| DFD Level 0, Level 1 and Level 2 (Purchase Ticket) | [`dfd-level0.png`](docs/diagrams/dfd-level0.png), [`dfd-level1.png`](docs/diagrams/dfd-level1.png), [`dfd-level2-purchase-ticket.png`](docs/diagrams/dfd-level2-purchase-ticket.png) | [`dfd.drawio`](docs/diagrams/dfd.drawio) |
+| DFD Level 0, Level 1, Level 2 (Purchase Ticket, Validate Ticket) | [`dfd-level0.png`](docs/diagrams/dfd-level0.png), [`dfd-level1.png`](docs/diagrams/dfd-level1.png), [`dfd-level2-purchase-ticket.png`](docs/diagrams/dfd-level2-purchase-ticket.png), [`dfd-level2-validate-ticket.png`](docs/diagrams/dfd-level2-validate-ticket.png) | [`dfd.drawio`](docs/diagrams/dfd.drawio) |
 
 PDF versions: [`er-diagram.pdf`](docs/diagrams/er-diagram.pdf), [`dfd.pdf`](docs/diagrams/dfd.pdf).
 
@@ -74,6 +74,7 @@ RideTrack-Docs/
         ├── dfd-level0.png
         ├── dfd-level1.png
         ├── dfd-level2-purchase-ticket.png
+        ├── dfd-level2-validate-ticket.png
         └── dfd.{pdf,drawio}
 ```
 
