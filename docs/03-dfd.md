@@ -20,7 +20,7 @@ The whole system is one process interacting with five external entities.
 
 ![DFD Level 1](diagrams/dfd-level1.png)
 
-Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (six pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
+Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (seven pages) · PDF: [`dfd.pdf`](diagrams/dfd.pdf)
 
 ### Processes
 
@@ -71,6 +71,9 @@ Editable source for all levels: [`dfd.drawio`](diagrams/dfd.drawio) (six pages) 
 | D1 | 6.0 | Alert recipients |
 | 6.0 | D7 | Alert record |
 | 6.0 | Passenger | Delay / cancellation alerts |
+| Passenger | 6.0 | Alert history request |
+| Authority Officer | 6.0 | Manual alert |
+| D7 | 6.0 | Alert records |
 | Conductor / Inspector | 4.0 | QR scan / manual ID, passenger count |
 | 4.0 | Conductor / Inspector | Validation result |
 | D4 | 4.0 | Ticket status |
@@ -172,6 +175,47 @@ Everything entering or leaving process 4.0 in Level 1 appears in Level 2: the st
 
 An unreadable QR or unknown ticket ID is treated as an `INVALID` outcome at 4.2, so it is still logged to D6 (`ticket_id` is nullable in the [database](06-database-mysql.md) for this reason).
 
+## Level 2 — Process 6.0 Manage Delays & Alerts
+
+Process 6.0 is expanded into five sub-processes. This covers FR8 (notify passengers of delays, cancellations and route changes).
+
+![DFD Level 2: Alerts](diagrams/dfd-level2-alerts.png)
+
+Editable source: page 7 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 7 of [`dfd.pdf`](diagrams/dfd.pdf)
+
+### Sub-processes
+
+| ID | Sub-process | Description |
+|---|---|---|
+| 6.1 | Receive Delay / Alert Trigger | Accepts an automatic "delay detected" from process 5.0, or a manual alert (delay, cancellation, route change) from an authority officer |
+| 6.2 | Create Alert Record | Builds the alert (trip, type, message, delay minutes) and stores it in D7 |
+| 6.3 | Select Recipients | Uses user preferences and favourite routes in D1 to choose who should be notified |
+| 6.4 | Send Notifications | Pushes the alert to the selected passengers and records delivery in D7 |
+| 6.5 | View Alert History | Lets a passenger see past alerts and mark them as read |
+
+### Data flows
+
+| From | To | Data |
+|---|---|---|
+| 5.0 Update Vehicle Location | 6.1 | Delay detected |
+| Transport Authority Officer | 6.1 | Manual alert (delay / cancellation / route change) |
+| 6.1 | 6.2 | Alert details (trip, type, delay) |
+| 6.2 | D7 | Alert record |
+| 6.2 | 6.3 | New alert |
+| D1 | 6.3 | User preferences & favourite routes |
+| 6.3 | 6.4 | Alert & recipient list |
+| 6.4 | Passenger | Delay / cancellation alerts (push) |
+| 6.4 | D7 | Delivery record |
+| Passenger | 6.5 | Alert history request / mark read |
+| D7 | 6.5 | Alert records |
+| 6.5 | Passenger | Alert history |
+
+### Balancing with Level 1
+
+Everything entering or leaving process 6.0 in Level 1 appears in Level 2: the delay signal from 5.0, the read of D1, the writes to and reads from D7, and the alerts sent to the passenger.
+
+> Level 1 was updated for this: three flows were added to 6.0 — `Passenger → 6.0` (alert history request), `Authority Officer → 6.0` (manual alert) and `D7 → 6.0` (alert records). Manual alerts are how route changes reach passengers, since automatic detection only covers delays.
+
 ## Level 2 — Process 7.0 Monitor Network & Reports (authority reports)
 
 Process 7.0 is expanded into five sub-processes. This covers FR9 (operations dashboard), FR10 (reports and statistics) and the authority's maintenance of routes and schedules.
@@ -222,7 +266,7 @@ Ticket scanning is the first step of validation, so it is drawn as a **Level 3**
 
 ![DFD Level 3: Scan Ticket](diagrams/dfd-level3-scan-ticket.png)
 
-Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf) (page order: Level 0, Level 1, Purchase Ticket, Validate Ticket, Scan Ticket, Authority Reports)
+Editable source: page 5 of [`dfd.drawio`](diagrams/dfd.drawio) · PDF: page 5 of [`dfd.pdf`](diagrams/dfd.pdf) (page order: Level 0, Level 1, Purchase Ticket, Validate Ticket, Scan Ticket, Authority Reports, Alerts)
 
 ### Sub-processes
 
