@@ -31,7 +31,7 @@ Legend: `[x]` done · `[ ]` to do. Requirement IDs (FR/NFR) refer to [docs/01-re
 
 - [ ] Commit or delete the untracked root-level files. The diagrams (`RideTrack_ER_Diagram.*`, `RideTrack_DFD*`) duplicate `docs/diagrams/`; the HCI report and `Y3.S2.WE_62 report complete.pdf` are referenced by the frontend tasks and README, so decide whether to track them
 - [ ] Remove `JoinTrip Lanka Final ER Diagram V3.drawio.png` – it looks like it belongs to a different project
-- [ ] Remove the nested `RideTrack-Docs/` folder (a second git repo; its contents are already in `docs/`) or add it to `.gitignore`
+- [x] Remove the nested `RideTrack-Docs/` folder (a second git repo; its contents were already in `docs/`)
 - [ ] Decide the code layout: add `backend/` and `mobile/` beside `docs/` (matches [05](docs/05-architecture.md) and [08](docs/08-frontend-react-native.md))
 - [ ] Set up CI (lint + tests) once the first code lands
 - [ ] Add PR template and branch protection for `main`
