@@ -35,6 +35,9 @@ Public transport is the main way many people in Sri Lanka travel, yet:
 | [Backend API](docs/07-api.md) | REST endpoints and WebSocket events |
 | [Frontend (React Native)](docs/08-frontend-react-native.md) | Libraries, project structure, screens per role, navigation |
 | [Use case diagram](docs/09-use-cases.md) | Actors, use cases, include/extend relationships, use case specifications |
+| [Backend tasks](docs/10-backend-tasks.md) | Markable checklist: what is done and the phased backend to-do list |
+| [Frontend tasks](docs/11-frontend-tasks.md) | Markable checklist: what is done and the phased mobile app to-do list |
+| [Developer guide](docs/12-developer-guide.md) | Setup, running, conventions, Git workflow, definition of done |
 
 ## Tech stack
 
@@ -71,6 +74,9 @@ RideTrack-Docs/
     ├── 07-api.md
     ├── 08-frontend-react-native.md
     ├── 09-use-cases.md
+    ├── 10-backend-tasks.md
+    ├── 11-frontend-tasks.md
+    ├── 12-developer-guide.md
     ├── schema.sql
     └── diagrams/
         ├── use-case-diagram.{png,pdf,drawio}
