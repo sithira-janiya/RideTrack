@@ -2,7 +2,26 @@
 
 **A Real-Time Public Bus/Train Tracking and Digital Ticketing Application**
 
-> HCI project, Sri Lanka Institute of Information Technology (SLIIT), Year 3 Semester 2 — Group ID `Y3.S2.WE_62`
+| | |
+|---|---|
+| **Institution** | Sri Lanka Institute of Information Technology (SLIIT) |
+| **Module** | IT3060 – Human-Computer Interaction |
+| **Group ID** | Y3.S2.WE_62 |
+| **Academic year** | Year 3, Semester 2 |
+| **Status** | Design documentation complete; implementation not started |
+
+## Team
+
+| Name | Registration No. |
+|---|---|
+| Silva D.S.J (Group leader) | IT23652200 |
+| Rajapaksha M.P.K | IT23665620 |
+| Herath H.M.S.G | IT23634626 |
+| Fernando H.L.R.D | IT23635302 |
+
+## Contents
+
+[The problem](#the-problem) · [Who it is for](#who-it-is-for) · [Documentation](#documentation) · [Tech stack](#tech-stack) · [Diagrams](#diagrams-at-a-glance) · [Repository layout](#repository-layout) · [Status](#status) · [Contributing](#contributing)
 
 RideTrack is a mobile app concept that shows commuters the live location and estimated arrival time of buses and trains, lets them buy and show digital QR tickets, and gives conductors, inspectors and transport authorities tools to verify fares and monitor the network in real time.
 
@@ -104,3 +123,11 @@ RideTrack-Docs/
 ## Status
 
 This repository currently contains **design documentation only** (requirements, use case diagram, ER model, data flow diagrams, and the proposed React Native / Node.js / MySQL design). There is no source code yet. The data model and flows were derived from the project's requirements and user research, and are intended as the basis for implementation.
+
+## Contributing
+
+Team members: see the [developer guide](docs/12-developer-guide.md) for setup, conventions, the Git workflow and the definition of done, and tick finished work in the [backend](docs/10-backend-tasks.md) and [frontend](docs/11-frontend-tasks.md) task lists.
+
+## Academic note
+
+This repository is coursework produced for SLIIT. It is shared for assessment and learning; please do not copy it for submission as your own work.
