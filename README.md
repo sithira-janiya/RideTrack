@@ -130,4 +130,4 @@ Team members: see the [developer guide](docs/12-developer-guide.md) for setup, c
 
 ## Academic note
 
-This repository is coursework produced for SLIIT. It is shared for assessment and learning; please do not copy it for submission as your own work.
+This repository is coursework produced for SLIIT. It is shared for assessment and learning; please do not copy it for submission as your own work. All rights reserved; see [LICENSE](LICENSE).
