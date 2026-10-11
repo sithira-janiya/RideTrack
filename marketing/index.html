@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="si">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RideTrack Advert</title>
+  <style>
+    :root { --bg: #EFF4FF; --text: #0F172A; --muted: #475569; --primary: #2563EB; }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) { --bg: #0B1220; --text: #E2E8F0; --muted: #94A3B8; --primary: #60A5FA; }
+    }
+    :root[data-theme="dark"] { --bg: #0B1220; --text: #E2E8F0; --muted: #94A3B8; --primary: #60A5FA; }
+
+    * { box-sizing: border-box; margin: 0; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'Nirmala UI', 'Noto Sans Sinhala', system-ui, sans-serif;
+      min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 20px; padding: 24px 16px;
+    }
+    h1 { font-size: clamp(1.5rem, 4vw, 2.5rem); color: var(--primary); }
+    p { color: var(--muted); text-align: center; }
+
+    .advert { width: 100%; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 50px rgba(15, 23, 42, .25); background: #000; }
+    .advert video { display: block; width: 100%; height: auto; }
+
+    /* Phones and portrait screens: vertical 9:16 video */
+    .advert.portrait { max-width: min(420px, calc(100vh * 9 / 16 - 40px)); }
+    .advert.landscape { display: none; max-width: 1100px; }
+
+    /* Wider screens: landscape 16:9 video */
+    @media (min-width: 768px) and (orientation: landscape) {
+      .advert.portrait { display: none; }
+      .advert.landscape { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <h1>RideTrack</h1>
+  <p>බස් එක තියෙන තැන සජීවීවම බලාගන්න</p>
+
+  <div class="advert portrait">
+    <video controls playsinline preload="metadata" src="RideTrack-advert-voice.mp4"></video>
+  </div>
+  <div class="advert landscape">
+    <video controls playsinline preload="metadata" src="RideTrack-advert-landscape.mp4"></video>
+  </div>
+
+  <script>
+    // pause the hidden video if the screen is rotated or resized while one is playing
+    const videos = document.querySelectorAll('video');
+    matchMedia('(min-width: 768px) and (orientation: landscape)').addEventListener('change', () =>
+      videos.forEach((v) => { if (v.offsetParent === null) v.pause(); }));
+  </script>
+</body>
+</html>
