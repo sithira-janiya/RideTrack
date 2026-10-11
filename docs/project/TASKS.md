@@ -108,6 +108,7 @@ Newest first. Add a line here whenever tasks or docs change.
 
 | Date | Change | Docs touched |
 |---|---|---|
+| 12 Oct 2026 | Added `marketing/` with the Sinhala advert voice-over script; advert videos (`marketing/*.mp4`) are gitignored | .gitignore, marketing/voiceover-script.md |
 | 4 Oct 2026 | Pull request opened from `feature/silva/home-live-data` into `dev` for the finished passenger screens (Transport Details, Route & Stops, Live Tracking, Home on live Firestore data, hi-fi restyle, Maps key setup); Silva's finished tasks ticked in TODO | TASKS, TODO |
 | 3 Oct 2026 | Home switched to live Firestore data: real-time listeners for vehicles, published routes and alerts (always filtered by the chosen transport), falls back to sample data when the backend is off, nobody is signed in, an error happens or the connection is slow; Live data or Sample data label; temporary test sign-in from the role picker using the seeded accounts. Checked against the local emulators with the real rules and seed data | ARCHITECTURE, BACKEND, DATA-MODEL, TESTING, TASKS, MEMBERS, TODO, UI-GUIDE |
 | 3 Oct 2026 | Google Maps key setup for the APK: `app.config.js` adds the maps plugin from `EXPO_PUBLIC_MAPS_API_KEY` and fails the EAS build if it is missing, `eas.json` build profiles, Android package `com.ridetrack.app`, Google provider on the tracking map, `npm run build:apk`, and the MAPS-SETUP guide (the key itself still has to be created in Google Cloud) | MAPS-SETUP, TECH-INFO, TASKS, TODO, docs index, Readme |

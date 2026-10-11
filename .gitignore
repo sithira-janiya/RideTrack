@@ -28,3 +28,6 @@ Thumbs.db
 # Expo generated
 expo-env.d.ts
 *.tsbuildinfo
+
+# marketing videos (large files, kept out of the repo)
+marketing/*.mp4
