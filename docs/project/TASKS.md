@@ -108,6 +108,8 @@ Newest first. Add a line here whenever tasks or docs change.
 
 | Date | Change | Docs touched |
 |---|---|---|
+| 13 Oct 2026 | Team contact number (+94 70 417 4576, Silva) added as the sender contact on both fax PDFs (cover, letter, reply slip) and to the Readme and docs index | outreach/fax-pack.html, both outreach PDFs, Readme, docs index |
+| 13 Oct 2026 | Fax pack for Sri Lanka Railways and the Department of Transportation: cover sheet, covering letter, latest project brief and reply slip, as two 4-page fax-safe A4 PDFs built from one HTML source | docs index, outreach/fax-pack.html, outreach/build-pdfs.sh, both outreach PDFs |
 | 12 Oct 2026 | Added the LinkedIn post text and a responsive advert page (`marketing/index.html`: portrait video on phones, landscape 16:9 video on wider screens) | marketing/linkedin-post.md, marketing/index.html |
 | 12 Oct 2026 | Added `marketing/` with the Sinhala advert voice-over script; advert videos (`marketing/*.mp4`) are gitignored | .gitignore, marketing/voiceover-script.md |
 | 4 Oct 2026 | Pull request opened from `feature/silva/home-live-data` into `dev` for the finished passenger screens (Transport Details, Route & Stops, Live Tracking, Home on live Firestore data, hi-fi restyle, Maps key setup); Silva's finished tasks ticked in TODO | TASKS, TODO |

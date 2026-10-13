@@ -31,9 +31,17 @@ Project documentation for RideTrack, a React Native app for live bus and train t
 | [TESTING.md](process/TESTING.md) | Functional and integration test cases, defect log |
 | [USABILITY-TESTING.md](process/USABILITY-TESTING.md) | Usability test plan and results |
 
+### outreach: letters to transport authorities
+
+| Doc | What it covers |
+|---|---|
+| [fax-pack.html](outreach/fax-pack.html) | Fax source: cover sheet, covering letter, project brief (status 13 Oct 2026) and reply slip; rebuild the PDFs with `bash docs/outreach/build-pdfs.sh` |
+| [RideTrack-Fax-SriLankaRailways.pdf](outreach/RideTrack-Fax-SriLankaRailways.pdf) | 4-page fax to Sri Lanka Railways (Department of Railways) |
+| [RideTrack-Fax-TransportDept.pdf](outreach/RideTrack-Fax-TransportDept.pdf) | 4-page fax to the Department of Transportation (bus services) |
+
 ## Team
 
-Silva D S J (leader), Rajapaksha M.P.K, Herath H.M.S.G, Fernando H L R D. Group Y3.S2.WE_62, IT3060 HCI, SLIIT.
+Silva D S J (leader), Rajapaksha M.P.K, Herath H.M.S.G, Fernando H L R D. Group Y3.S2.WE_62, IT3060 HCI, SLIIT. Contact: Silva D S J, +94 70 417 4576.
 
 ## Keeping docs current
 

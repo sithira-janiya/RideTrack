@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>RideTrack Fax Pack</title>
+<!--
+  Fax pack source. Printed to PDF twice, once per recipient:
+    fax-pack.html#railway   -> RideTrack-Fax-SriLankaRailways.pdf
+    fax-pack.html#transport -> RideTrack-Fax-TransportDept.pdf
+  Rebuild with docs/outreach/build-pdfs.sh. Fax-safe: A4, black on white, no shading.
+-->
+<style>
+  @page { size: A4; margin: 18mm 18mm 16mm 18mm; }
+  * { box-sizing: border-box; }
+  html, body { background: #fff; color: #000; }
+  body { font-family: Arial, Helvetica, sans-serif; font-size: 10.5pt; line-height: 1.38; margin: 0; }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  h1 { font-size: 30pt; letter-spacing: 6px; margin: 0 0 2mm; }
+  h2 { font-size: 15pt; margin: 0 0 3mm; border-bottom: 2px solid #000; padding-bottom: 1.5mm; }
+  h3 { font-size: 11.5pt; margin: 4mm 0 1.5mm; }
+  p { margin: 0 0 3mm; }
+  ul { margin: 0 0 3mm; padding-left: 6mm; }
+  li { margin-bottom: 1mm; }
+  table { width: 100%; border-collapse: collapse; }
+  td, th { border: 1px solid #000; padding: 1.5mm 2.5mm; vertical-align: top; text-align: left; }
+  th { font-weight: bold; }
+  .brand { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid #000; padding-bottom: 2.5mm; margin-bottom: 4mm; }
+  .brand .name { font-size: 18pt; font-weight: bold; }
+  .brand .sub { font-size: 10pt; }
+  .label { width: 32%; font-weight: bold; }
+  .blank { display: inline-block; min-width: 55mm; border-bottom: 1px solid #000; }
+  .boxes span { display: inline-block; margin-right: 8mm; }
+  .box { display: inline-block; width: 4mm; height: 4mm; border: 1px solid #000; vertical-align: -0.5mm; margin-right: 1.5mm; }
+  .notice { border: 2px solid #000; padding: 3mm; font-size: 10pt; margin-top: 6mm; }
+  .foot { font-size: 9pt; margin-top: 6mm; border-top: 1px solid #000; padding-top: 2mm; }
+  .sign { margin-top: 6mm; }
+  .lines div { border-bottom: 1px solid #000; height: 8mm; }
+  .small { font-size: 9.5pt; }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1: FAX COVER -->
+<section class="page">
+  <div class="brand">
+    <div><div class="name">RideTrack</div><div class="sub">Live bus and train tracking with QR ticketing for Sri Lanka</div></div>
+    <div class="sub" style="text-align:right">Group Y3.S2.WE_62<br>IT3060 Human Computer Interaction<br>Sri Lanka Institute of Information Technology (SLIIT)</div>
+  </div>
+
+  <h1>FAX</h1>
+  <p class="small">Page 1 of 4 (including this cover sheet)</p>
+
+  <table>
+    <tr><td class="label">To</td><td data-f="toTitle"></td></tr>
+    <tr><td class="label">Organisation</td><td data-f="toOrg"></td></tr>
+    <tr><td class="label">Attention</td><td data-f="attn"></td></tr>
+    <tr><td class="label">Fax number</td><td><span class="blank">&nbsp;</span></td></tr>
+    <tr><td class="label">From</td><td>Silva D S J, Team Leader, RideTrack project team</td></tr>
+    <tr><td class="label">Organisation</td><td>Faculty of Computing, SLIIT, Malabe</td></tr>
+    <tr><td class="label">Sender contact</td><td><b>+94 70 417 4576</b> (Silva D S J)</td></tr>
+    <tr><td class="label">Date</td><td>13 October 2026</td></tr>
+    <tr><td class="label">Subject</td><td><b>RideTrack mobile app: project brief and request for feedback and guidance</b></td></tr>
+  </table>
+
+  <h3>Action requested</h3>
+  <p class="boxes">
+    <span><i class="box"></i>Urgent</span>
+    <span><i class="box"></i>For review</span>
+    <span><i class="box"></i>Please comment</span>
+    <span><i class="box"></i>Please reply</span>
+  </p>
+
+  <h3>Contents</h3>
+  <table>
+    <tr><th style="width:12%">Page</th><th>Document</th></tr>
+    <tr><td>1</td><td>Fax cover sheet</td></tr>
+    <tr><td>2</td><td>Covering letter</td></tr>
+    <tr><td>3</td><td>RideTrack project brief (latest version, 13 October 2026)</td></tr>
+    <tr><td>4</td><td>Reply slip (please complete and fax back)</td></tr>
+  </table>
+
+  <div class="notice">
+    If you did not receive all 4 pages, or any page is unclear, please call the sender on +94 70 417 4576.
+    This fax is intended for the named recipient. If you received it in error, please inform the sender and destroy the copy.
+  </div>
+</section>
+
+<!-- PAGE 2: COVERING LETTER -->
+<section class="page">
+  <div class="brand">
+    <div><div class="name">RideTrack</div><div class="sub">SLIIT student project, Group Y3.S2.WE_62</div></div>
+    <div class="sub" style="text-align:right">Page 2 of 4</div>
+  </div>
+
+  <p>13 October 2026</p>
+  <p><span data-f="toTitle"></span><br><span data-f="toOrg"></span></p>
+
+  <p>Dear Sir / Madam,</p>
+  <p><b>RideTrack: a mobile app for live <span data-f="mode"></span> tracking and QR ticketing</b></p>
+
+  <p>We are a team of four third-year undergraduates at the Sri Lanka Institute of Information Technology (SLIIT). As part of the IT3060 Human Computer Interaction module we are building <b>RideTrack</b>, an Android app that shows passengers where buses and trains are, when they will arrive, and lets them buy a QR ticket that a conductor or ticket inspector scans on board.</p>
+
+  <p data-f="why"></p>
+
+  <p>The app includes a dedicated <b>transport authority</b> section in which officers manage vehicles, routes, stops, schedules and fares, watch live operations, review incidents reported by staff, and publish service alerts that reach passengers' phones immediately. We have designed this section with <span data-f="short"></span> officers in mind and would value your view on whether it reflects how your work is actually done.</p>
+
+  <p>We respectfully request:</p>
+  <ul data-f="asks"></ul>
+
+  <p>A one-page brief describing the app and its current status is attached, followed by a short reply slip. RideTrack is an academic project. It is not affiliated with or endorsed by your <span data-f="orgWord"></span>, handles no real payments, and will not be released to the public under your name without your written consent.</p>
+
+  <p>Thank you for your time and consideration.</p>
+
+  <p class="sign">Yours faithfully,</p>
+  <div style="margin-top:12mm; width:70mm; border-top:1px solid #000; padding-top:1.5mm">
+    Silva D S J (IT23652200)<br>Team Leader, RideTrack<br>Contact: +94 70 417 4576<br>on behalf of Group Y3.S2.WE_62, SLIIT
+  </div>
+
+  <p class="small" style="margin-top:6mm">Team members: Silva D S J (IT23652200), Rajapaksha M.P.K (IT23665620), Herath H.M.S.G (IT23634626), Fernando H L R D (IT23635302).</p>
+</section>
+
+<!-- PAGE 3: PROJECT BRIEF -->
+<section class="page">
+  <div class="brand">
+    <div><div class="name">RideTrack: Project Brief</div><div class="sub">Latest version: app 1.0.0 (development), status as of 13 October 2026</div></div>
+    <div class="sub" style="text-align:right">Page 3 of 4</div>
+  </div>
+
+  <h3 style="margin-top:0">What it is</h3>
+  <p>An Android app for Sri Lankan public transport. A passenger first chooses <b>bus or train</b>; the whole app then shows only that type. Three user roles share one live database:</p>
+
+  <table class="small">
+    <tr><th style="width:22%">Role</th><th>What they can do</th></tr>
+    <tr><td><b>Passenger</b></td><td>Search routes, filter and sort trips, see stops and facilities, track a vehicle live on a map, book and pay (simulated), keep a QR ticket, cancel, view history, receive alerts.</td></tr>
+    <tr><td><b>Conductor / inspector</b></td><td>Sign in as staff, view the assigned journey, scan and validate QR tickets, see passenger counts, report incidents and delays, complete the journey.</td></tr>
+    <tr><td><b>Transport authority</b></td><td>Manage vehicles, routes, stops, schedules, fares and facilities; preview and publish changes; watch live operations; review incidents; publish alerts.</td></tr>
+  </table>
+
+  <p class="small" style="margin-top:2mm">Links between roles: (1) the passenger's QR ticket is scanned by the conductor; (2) a conductor's incident report reaches the authority; (3) an authority alert appears in passengers' notifications.</p>
+
+  <h3>Current status</h3>
+  <table class="small">
+    <tr><th style="width:38%">Area</th><th>Status</th></tr>
+    <tr><td>Design (requirements, prototypes, user testing)</td><td>Complete: 42 screens designed and tested with users</td></tr>
+    <tr><td>Passenger search and live tracking (8 screens)</td><td>Built. Home reads live data; other screens use sample timetables. Vehicle movement is simulated from the timetable.</td></tr>
+    <tr><td>Booking and QR tickets (11 screens)</td><td>In development</td></tr>
+    <tr><td>Conductor / inspector (10 screens)</td><td>In development</td></tr>
+    <tr><td>Transport authority (13 screens)</td><td>In development; shared database and security rules prepared</td></tr>
+    <tr><td>Testing and release</td><td>Functional, integration and usability testing (5+ participants) to follow; Android APK release</td></tr>
+  </table>
+
+  <h3>Technology and data</h3>
+  <ul class="small">
+    <li>React Native with Expo (SDK 57), TypeScript, Google Maps; Firebase Firestore and Authentication for real-time data and role-based sign-in.</li>
+    <li>Payments are simulated; no card or bank details are collected.</li>
+    <li>All route, timetable and fare data in the app is currently sample data prepared by the team, not official data.</li>
+    <li>Access to the database is controlled by role-based security rules; passenger data is used only for tickets and alerts.</li>
+  </ul>
+
+  <h3>How <span data-f="short"></span> could benefit</h3>
+  <ul class="small" data-f="benefits"></ul>
+</section>
+
+<!-- PAGE 4: REPLY SLIP -->
+<section class="page">
+  <div class="brand">
+    <div><div class="name">Reply Slip</div><div class="sub">Please complete and fax back, or call Silva D S J on +94 70 417 4576</div></div>
+    <div class="sub" style="text-align:right">Page 4 of 4</div>
+  </div>
+
+  <table>
+    <tr><td class="label">Organisation</td><td data-f="toOrg"></td></tr>
+    <tr><td class="label">Responding officer</td><td>&nbsp;</td></tr>
+    <tr><td class="label">Designation</td><td>&nbsp;</td></tr>
+    <tr><td class="label">Phone / email</td><td>&nbsp;</td></tr>
+  </table>
+
+  <h3>Please tick all that apply</h3>
+  <table>
+    <tr><td style="width:8%"><i class="box"></i></td><td>We are willing to give feedback on the authority section of the app.</td></tr>
+    <tr><td><i class="box"></i></td><td>We are willing to attend a short demonstration (in person or online).</td></tr>
+    <tr><td><i class="box"></i></td><td data-f="dataTick"></td></tr>
+    <tr><td><i class="box"></i></td><td>Please contact the officer named above for further discussion.</td></tr>
+    <tr><td><i class="box"></i></td><td>We are not able to assist at this time.</td></tr>
+  </table>
+
+  <h3>Comments</h3>
+  <div class="lines"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+
+  <table style="margin-top:8mm">
+    <tr><td class="label">Signature</td><td style="height:16mm">&nbsp;</td></tr>
+    <tr><td class="label">Date</td><td>&nbsp;</td></tr>
+    <tr><td class="label">Official stamp</td><td style="height:22mm">&nbsp;</td></tr>
+  </table>
+
+  <p class="foot">RideTrack, Group Y3.S2.WE_62, IT3060 Human Computer Interaction, SLIIT. Contact: Silva D S J, +94 70 417 4576. Thank you for your response.</p>
+</section>
+
+<script>
+  // Recipient-specific wording. The URL hash picks the recipient (#railway or #transport).
+  var R = {
+    railway: {
+      toTitle: "The General Manager of Railways",
+      toOrg: "Sri Lanka Railways (Department of Railways)",
+      attn: "Commercial / Operations Division",
+      mode: "train",
+      short: "Sri Lanka Railways",
+      orgWord: "department",
+      why: "Train passengers often wait on platforms without knowing whether a train is delayed, and ticket checks on busy services take time. RideTrack aims to give passengers live arrival information and a paperless QR ticket that a ticket inspector validates with a phone camera, while giving the department a live view of its services and a direct channel for delay alerts.",
+      asks: [
+        "Feedback on the authority and ticket-inspector workflows in the app.",
+        "Guidance on using the publicly published train timetables, stations and fares in the app for demonstration.",
+        "A contact officer, and if convenient, a short demonstration to your team."
+      ],
+      benefits: [
+        "Delay and cancellation alerts published once, delivered to every affected passenger's phone.",
+        "Inspectors validate QR tickets with a phone camera; reused tickets are rejected.",
+        "A live operations map and incident reports from on-board staff in one place."
+      ],
+      dataTick: "You may use our publicly published timetables, stations and fares in the app for demonstration."
+    },
+    transport: {
+      toTitle: "The Director / Chairman",
+      toOrg: "Department of Transportation (Bus Services)",
+      attn: "Operations / Passenger Services",
+      mode: "bus",
+      short: "the department",
+      orgWord: "department",
+      why: "Bus passengers often wait at stops without knowing when the next bus will arrive, and cash ticketing slows boarding. RideTrack aims to give passengers live arrival information and a QR ticket that a conductor validates with a phone camera, while giving the authority a live view of services and a direct channel for service alerts.",
+      asks: [
+        "Feedback on the authority and conductor workflows in the app.",
+        "Guidance on using publicly available bus route, stop and fare information in the app for demonstration.",
+        "A contact officer, and if convenient, a short demonstration to your team."
+      ],
+      benefits: [
+        "Route changes and disruption alerts published once, delivered to every affected passenger's phone.",
+        "Conductors validate QR tickets with a phone camera; reused tickets are rejected.",
+        "A live operations map and incident reports from conductors in one place."
+      ],
+      dataTick: "You may use publicly available bus routes, stops and fares in the app for demonstration."
+    }
+  };
+  var d = R[(location.hash || "#railway").slice(1)] || R.railway;
+  document.querySelectorAll("[data-f]").forEach(function (el) {
+    var v = d[el.getAttribute("data-f")];
+    if (Array.isArray(v)) { el.innerHTML = v.map(function (x) { return "<li>" + x + "</li>"; }).join(""); }
+    else { el.textContent = v; }
+  });
+</script>
+</body>
+</html>
